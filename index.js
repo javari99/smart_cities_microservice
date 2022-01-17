@@ -86,6 +86,7 @@ function StartServerInstance(port) {
         }
     });
     
+    //TODO: hacer bien los mensajes y mandarlos con axios
     serialCom.on('data', function(data){console.log('Data', data);});
     
 }
