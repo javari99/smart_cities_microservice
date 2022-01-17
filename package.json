@@ -1,0 +1,35 @@
+{
+  "name": "smart_cities_microservice",
+  "version": "1.0.0",
+  "description": "A microservice for the smart cities course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javari99/smart_cities_microservice.git"
+  },
+  "keywords": [
+    "node",
+    "axios",
+    "express",
+    "microservice"
+  ],
+  "author": "Javier Arin",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/javari99/smart_cities_microservice/issues"
+  },
+  "homepage": "https://github.com/javari99/smart_cities_microservice#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "morgan": "^1.10.0",
+    "serialport": "^9.2.8"
+  },
+  "devDependencies": {
+    "eslint": "^8.7.0"
+  }
+}
