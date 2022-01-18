@@ -1,14 +1,10 @@
 const credentials = require('./lib/config/config');
 
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const fs = require('fs');
-
 const SerialPort = require('serialport');
-
-
 
 const app = express();
 
@@ -79,6 +75,7 @@ function StartServerInstance(port) {
         ERRORMSG: ${err.message}
         stacktrace: ${err.stack}`);
     });
+    
     //TODO: Handle serialport
     serialCom = new SerialPort(credentials.mote.route, {baudRate: credentials.mote.baudrate}, (err) => {
         if(err){
@@ -87,8 +84,10 @@ function StartServerInstance(port) {
     });
     
     //TODO: hacer bien los mensajes y mandarlos con axios
-    serialCom.on('data', function(data){console.log('Data', data);});
-    
+    serialCom.on('data', function(data){
+        console.log('Data:', data.toString('ascii'));
+    });
+    serialCom.write('set_gateway\n');
 }
 
 if(require.main === module){
