@@ -1,10 +1,11 @@
-const credentials = require('./lib/config/config');
+const {credentials} = require('./lib/config/config');
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const fs = require('fs');
 const SerialPort = require('serialport');
+const { exit } = require('process');
 
 const app = express();
 
@@ -64,7 +65,7 @@ app.use((req, res) => {
 });
 
 var serialCom;
-function StartServerInstance(port) {
+function StartServerInstance(port, serialRoute, serialBaud) {
     app.listen(port, () => {
         console.log(`Express server in ${app.get('env')} mode, started on http://localhost:${port};
         Press Ctrl-C to terminate.`);
@@ -77,21 +78,22 @@ function StartServerInstance(port) {
     });
     
     //TODO: Handle serialport
-    serialCom = new SerialPort(credentials.mote.route, {baudRate: credentials.mote.baudrate}, (err) => {
+    serialCom = new SerialPort(serialRoute, {baudRate:serialBaud}, (err) => {
         if(err){
             console.log('ERROR on serial: ' + err);
+            exit(1);
         }
     });
     
     //TODO: hacer bien los mensajes y mandarlos con axios
-    serialCom.on('data', function(data){
+    serialCom.on('data', (data) => {
         console.log('Data:', data.toString('ascii'));
     });
     serialCom.write('set_gateway\n');
 }
 
 if(require.main === module){
-    StartServerInstance(credentials.port);
+    StartServerInstance(credentials.port, credentials.mote.route, credentials.mote.baudRate);
 } else {
     module.exports = StartServerInstance;
 }
