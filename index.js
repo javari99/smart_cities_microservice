@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const fs = require('fs');
 const SerialPort = require('serialport');
 const { exit } = require('process');
+const axios = require('axios');
 
 const app = express();
 
@@ -86,9 +87,44 @@ function StartServerInstance(port, serialRoute, serialBaud) {
     });
     
     //TODO: hacer bien los mensajes y mandarlos con axios
-    serialCom.on('data', (data) => {
-        console.log('Data:', data.toString('ascii'));
+    serialCom.on('data', (dataBuffer) => {
+        let dataString = (dataBuffer.toString('ascii')).trim();
+        console.log('DataString: ' + dataString);
+        let re = /DATA:id=(\d+)&light=(\d+)&temp=(\d+)&led=(\d+)/gm;
+        let matches = re.exec(dataString);
+        console.log(matches);
+
+        if(matches){
+            const moteId = matches[1];
+            const light = matches[2];
+            const temp = matches[3];
+            const ledLevel = matches[4];
+
+            const record = {
+                mote: moteId,
+                timestamp: new Date(Date.now()),
+                light: light,
+                temperature: temp,
+                ledLevel: ledLevel,
+            };
+
+            const body = {
+                key: credentials.api.keys[0],
+                record: record,
+            }
+
+            axios({
+                method: 'post',
+                url: credentials.api.url,
+                data:body,
+            }).then((resp) => {
+                console.log(resp);
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
     });
+
     serialCom.write('set_gateway\n');
 }
 
