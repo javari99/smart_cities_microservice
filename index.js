@@ -48,6 +48,7 @@ app.post('/api/ledlevel', (req, res) => {
             serialCom.write(`manual_${mote.id}\n\n`);
             serialCom.write(`led_${mote.ledLevel}_${mote.id}\n\n`);
             res.json({msg: `OK sent: manual_${mote.id}\n and led_${mote.ledLevel}_${mote.id}\n` });
+            return;
         } else{
             res.status(404).json({msg:'ERROR: no ledlevel or mode specified'});
             return;
