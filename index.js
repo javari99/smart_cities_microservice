@@ -40,20 +40,23 @@ app.post('/api/ledlevel', (req, res) => {
         if (mote.mode) {
             switch (mote.mode) {
             case 1:
-                serialCom.write(`automatico_${mote.id}`);
+                serialCom.write(`automatico_${mote.id}\n`);
                 break;
             }
         }else if(mote.ledLevel){
-            serialCom.write(`manual_${mote.id}`);
-            serialCom.write(`led_${mote.ledLevel}_${mote.id}`);
+            serialCom.write(`manual_${mote.id}\n`);
+            serialCom.write(`led_${mote.ledLevel}_${mote.id}\n`);
         } else{
             res.status(404).json({msg:'ERROR: no ledlevel or mode specified'});
+            return;
         }
         res.json({msg: 'OK'});
+        return;
     } else {
         res.status(401).json({
             msg: 'ERROR invalid credentials'
         });
+        return;
     }
 });
 
@@ -118,7 +121,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
                 url: credentials.api.url,
                 data:body,
             }).then((resp) => {
-                console.log(resp);
+                console.log(resp.data);
             }).catch((err) => {
                 console.log(err);
             })
