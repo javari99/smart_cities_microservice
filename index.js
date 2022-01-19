@@ -41,11 +41,13 @@ app.post('/api/ledlevel', (req, res) => {
             switch (mote.mode) {
             case 1:
                 serialCom.write(`automatico_${mote.id}\n`);
-                break;
+                res.json({msg: 'OK set to auto'});
+                return;
             }
         }else if(typeof(mote.ledLevel) === 'number'){
-            serialCom.write(`manual_${mote.id}\n`);
-            serialCom.write(`led_${mote.ledLevel}_${mote.id}\n`);
+            serialCom.write(`manual_${mote.id}\n\n`);
+            serialCom.write(`led_${mote.ledLevel}_${mote.id}\n\n`);
+            res.json({msg: `OK sent: manual_${mote.id}\n and led_${mote.ledLevel}_${mote.id}\n` });
         } else{
             res.status(404).json({msg:'ERROR: no ledlevel or mode specified'});
             return;
