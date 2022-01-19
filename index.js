@@ -37,13 +37,13 @@ app.post('/api/ledlevel', (req, res) => {
     if(credentials.api.keys.includes(req.body.key)) {
         //TODO: Write to the serial line
         const mote = req.body.mote;
-        if (mote.mode) {
+        if (typeof(mote.mode) === 'number') {
             switch (mote.mode) {
             case 1:
                 serialCom.write(`automatico_${mote.id}\n`);
                 break;
             }
-        }else if(mote.ledLevel){
+        }else if(typeof(mote.ledLevel) === 'number'){
             serialCom.write(`manual_${mote.id}\n`);
             serialCom.write(`led_${mote.ledLevel}_${mote.id}\n`);
         } else{
