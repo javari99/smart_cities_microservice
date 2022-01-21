@@ -37,19 +37,23 @@ app.post('/api/ledlevel', (req, res) => {
     if(credentials.api.keys.includes(req.body.key)) {
         //TODO: Write to the serial line
         const mote = req.body.mote;
+        console.log(mote);
         if (typeof(mote.mode) === 'number') {
             switch (mote.mode) {
+            case 0:
+                serialCom.write(`manual_${mote.id}\n`);
+                res.json({msg: 'OK set to manual'});
+                return;
             case 1:
                 serialCom.write(`automatico_${mote.id}\n`);
                 res.json({msg: 'OK set to auto'});
                 return;
             }
         }else if(typeof(mote.ledLevel) === 'number'){
-            serialCom.write(`manual_${mote.id}\n\n`);
-            serialCom.write(`led_${mote.ledLevel}_${mote.id}\n\n`);
+            serialCom.write(`led_${mote.ledLevel}_${mote.id}\n`);
             res.json({msg: `OK sent: manual_${mote.id}\n and led_${mote.ledLevel}_${mote.id}\n` });
             return;
-        } else{
+        }else{
             res.status(404).json({msg:'ERROR: no ledlevel or mode specified'});
             return;
         }
@@ -98,7 +102,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
         console.log('DataString: ' + dataString);
         let re = /DATA:id=(\d+)&light=(\d+)&temp=(\d+)&led=(\d+)/gm;
         let matches = re.exec(dataString);
-        console.log(matches);
+        //console.log(matches);
 
         if(matches){
             const moteId = matches[1];
@@ -132,6 +136,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
     });
 
     serialCom.write('set_gateway\n');
+    setInterval(() => {serialCom.write('set_gateway\n');}, 120*1000);
 }
 
 if(require.main === module){
