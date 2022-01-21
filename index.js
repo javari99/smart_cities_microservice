@@ -136,7 +136,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
     });
 
     serialCom.write('set_gateway\n');
-    setInterval(() => {serialCom.write('set_gateway\n');}, 120*1000);
+    setInterval(() => {serialCom.write('set_gateway\n');}, 30*1000);
 }
 
 if(require.main === module){
