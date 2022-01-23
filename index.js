@@ -28,6 +28,10 @@ case 'production':
 
 app.use(bodyParser.json());
 
+//---------------------------------------------------
+//                  Routes
+//---------------------------------------------------
+
 app.get('/', (req, res) => {
     res.json({msg:'Alive'});
 });
@@ -35,7 +39,6 @@ app.get('/', (req, res) => {
 app.post('/api/ledlevel', (req, res) => {
     console.log('Body received: ' + JSON.stringify(req.body));
     if(credentials.api.keys.includes(req.body.key)) {
-        //TODO: Write to the serial line
         const mote = req.body.mote;
         console.log(mote);
         if (typeof(mote.mode) === 'number') {
@@ -51,7 +54,7 @@ app.post('/api/ledlevel', (req, res) => {
             }
         }else if(typeof(mote.ledLevel) === 'number'){
             serialCom.write(`led_${mote.ledLevel}_${mote.id}\n`);
-            res.json({msg: `OK sent: manual_${mote.id}\n and led_${mote.ledLevel}_${mote.id}\n` });
+            res.json({msg: `OK sent: led_${mote.ledLevel}_${mote.id}\n` });
             return;
         }else{
             res.status(404).json({msg:'ERROR: no ledlevel or mode specified'});
@@ -75,6 +78,10 @@ app.use((req, res) => {
     res.status(500).json({msg: 'Internal server error'});
 });
 
+//---------------------------------------------------
+//            Start server and serialcom
+//---------------------------------------------------
+
 var serialCom;
 function StartServerInstance(port, serialRoute, serialBaud) {
     app.listen(port, () => {
@@ -88,7 +95,6 @@ function StartServerInstance(port, serialRoute, serialBaud) {
         stacktrace: ${err.stack}`);
     });
     
-    //TODO: Handle serialport
     serialCom = new SerialPort(serialRoute, {baudRate:serialBaud}, (err) => {
         if(err){
             console.log('ERROR on serial: ' + err);
@@ -96,7 +102,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
         }
     });
     
-    //TODO: hacer bien los mensajes y mandarlos con axios
+    //TODO: leer los mensajes desde el ; hasta el ; o reiniciar el buffer cada vez que tenemos un match del regex
     serialCom.on('data', (dataBuffer) => {
         let dataString = (dataBuffer.toString('ascii')).trim();
         console.log('DataString: ' + dataString);
@@ -121,7 +127,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
             const body = {
                 key: credentials.api.keys[0],
                 record: record,
-            }
+            };
 
             axios({
                 method: 'post',
@@ -131,7 +137,7 @@ function StartServerInstance(port, serialRoute, serialBaud) {
                 console.log(resp.data);
             }).catch((err) => {
                 console.log(err);
-            })
+            });
         }
     });
 
