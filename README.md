@@ -92,7 +92,7 @@ const  app  =  express();
 	 - [axios](https://www.npmjs.com/package/axios)
 ```javascript
 //---------------------------------------------------
-// 					Middleware
+// 			Middleware
 //---------------------------------------------------
 switch(app.get('env')){
 case 'development':
@@ -113,7 +113,7 @@ app.use(bodyParser.json());
 > Por ejemplo, al ir al endpoint ***/api/ledlevel*** nuestra petición pasará por *morgan* que logeará nuestra petición. Después pasará por *body-parser* que convertirá nuestro cuerpo de la petición ***POST*** en un objeto que node entienda. Este objeto es el ***req.body***.
 ```javascript
 //---------------------------------------------------
-// 						Routes
+// 			Routes
 //---------------------------------------------------
 app.get('/', (req, res) => {
 	res.json({msg:'Alive'});
@@ -168,7 +168,7 @@ app.use((req, res) => {
 	-	***500:*** En caso de existir un error en el servidor interno, se llega a esta ruta y devuelve el mensaje en JSON *"Internal server error"*.
 ```javascript
 //---------------------------------------------------
-// 				Start server and serialcom
+// 		Start server and serialcom
 //---------------------------------------------------
 var serialCom;
 function  StartServerInstance(port, serialRoute, serialBaud) {
