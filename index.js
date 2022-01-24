@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const fs = require('fs');
 const SerialPort = require('serialport');
+const https = require('https');
 const { exit } = require('process');
 const axios = require('axios');
 
@@ -84,11 +85,21 @@ app.use((req, res) => {
 
 var serialCom;
 function StartServerInstance(port, serialRoute, serialBaud) {
+
+    https.createServer({
+        key: fs.readFileSync('../sslcert/smartercity.es/privkey1.pem'),
+        cert: fs.readFileSync('../sslcert/smartercity.es/cert1.pem'),
+        ca: fs.readFileSync('../sslcert/smartercity.es/chain1.pem')
+    }, app).listen(port, function(){
+        console.log(`Express server in ${app.get('env')} mode, started on https://localhost:${port};
+        Press Ctrl-C to terminate.`);
+    });
+    /*
     app.listen(port, () => {
         console.log(`Express server in ${app.get('env')} mode, started on http://localhost:${port};
         Press Ctrl-C to terminate.`);
     });
-
+    */
     process.on('uncaughtException', (err) => {
         console.log(`FATAL ERROR: UNCAUGHT EXCEPTION
         ERRORMSG: ${err.message}
