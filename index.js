@@ -87,9 +87,9 @@ var serialCom;
 function StartServerInstance(port, serialRoute, serialBaud) {
 
     https.createServer({
-        key: fs.readFileSync('../sslcert/smartercity.es/privkey1.pem'),
-        cert: fs.readFileSync('../sslcert/smartercity.es/cert1.pem'),
-        ca: fs.readFileSync('../sslcert/smartercity.es/chain1.pem')
+        key: fs.readFileSync('../sslcert/router.smartercity.es/privkey1.pem'),
+        cert: fs.readFileSync('../sslcert/router.smartercity.es/cert1.pem'),
+        ca: fs.readFileSync('../sslcert/router.smartercity.es/chain1.pem')
     }, app).listen(port, function(){
         console.log(`Express server in ${app.get('env')} mode, started on https://localhost:${port};
         Press Ctrl-C to terminate.`);
