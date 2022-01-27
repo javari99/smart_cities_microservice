@@ -113,20 +113,14 @@ function StartServerInstance(port, serialRoute, serialBaud) {
         }
     });
     
-    let dataString = '';
     //TODO: leer los mensajes desde el ; hasta el ; o reiniciar el buffer cada vez que tenemos un match del regex
     serialCom.on('data', (dataBuffer) => {
-        dataString += (dataBuffer.toString('ascii')).trim();
+        let dataString = (dataBuffer.toString('ascii')).trim();
         console.log('DataString: ' + dataString);
         let re = /DATA:id=(\d+)&light=(\d+)&temp=(\d+)&led=(\d+)/gm;
-        if(!re.test(dataString)){
-            console.log('Incomplete string: ' + dataString);
-            return;
-        }
 
         let matches = re.exec(dataString);
         //console.log(matches);
-        dataString = '';
 
         if(matches){
             const moteId = matches[1];
